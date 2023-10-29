@@ -17,7 +17,7 @@ class ProductController extends Controller
         $this->product = $product;
     }
 
-    public function index(Request $request)
+    /*public function index(Request $request)
     {
         $companies = Company::all();
         $keyword = $request->input('keyword');
@@ -26,7 +26,7 @@ class ProductController extends Controller
         $products = $this->product->getAllProducts($keyword, $company_name);
 
         return view('index', compact('companies', 'products', 'keyword'));
-    }
+    }*/
 
     public function create()
     {
@@ -96,4 +96,20 @@ class ProductController extends Controller
             return redirect()->back()->with('error', '商品を削除できませんでした。');
         }
     }
+
+    public function index(Request $request)
+{
+    $companies = Company::all();
+    $keyword = $request->input('keyword');
+    $company_name = $request->input('company_name');
+    $min_price = $request->input('min_price');
+    $max_price = $request->input('max_price');
+    $min_stock = $request->input('min_stock');
+    $max_stock = $request->input('max_stock');
+
+    $products = $this->product->getAllProducts($keyword, $company_name, $min_price, $max_price, $min_stock, $max_stock);
+
+    return view('index', compact('companies', 'products', 'keyword'));
+}
+
 }
