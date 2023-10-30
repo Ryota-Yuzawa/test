@@ -26,9 +26,9 @@
         {{session('message')}}
     @endif
     <div id="productTable">
-        <table border="1">
+        <table id="table" border="1">
             <thead>
-                <tr>
+                <tr style="cursor: pointer;">
                     <th>ID</th>
                     <th>商品画像</th>
                     <th>商品名</th>
@@ -63,6 +63,8 @@
 </div>
 
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js"></script>
+
 <script>
     $(document).ready(function() {
         $('#searchForm').submit(function(e) {
@@ -76,8 +78,7 @@
                 }
             });
         });
-    });
-
-    
+        $('#table').tablesorter();
+    }); 
 </script>
 @endsection
