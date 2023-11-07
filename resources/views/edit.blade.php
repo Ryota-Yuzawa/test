@@ -19,7 +19,7 @@
         </div>
         <div>
             <lavel>メーカー名：</lavel>
-            <select name="company_name">
+            <select name="company_id">
                 @foreach($companies as $company)
                 <option value="{{$company->id}}">{{$company->company_name}}</option>
                 @endforeach

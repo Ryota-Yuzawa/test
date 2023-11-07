@@ -26,9 +26,9 @@
         {{session('message')}}
     @endif
     <div id="productTable">
-        <table id="table" border="1">
+        <table border="1">
             <thead>
-                <tr style="cursor: pointer;">
+                <tr>
                     <th>ID</th>
                     <th>商品画像</th>
                     <th>商品名</th>
@@ -50,11 +50,13 @@
                             <a href="{{ route('show', $product->id) }}">詳細</a>
                         </td>
                         <td>
-                            <form action="{{ route('destroy', $product->id) }}" method="POST">
-                            @csrf
-                                <button type="submit" class="btn btn-danger">削除</button>
+                            <form id="deleteForm{{$product->id}}" class="delete-form" data-product-id="{{$product->id}}">
+                                @csrf
+                                @method('DELETE')
+                                <button type="button" class="btn btn-danger delete-button">削除</button>
                             </form>
                         </td>
+
                     </tr>
                 @endforeach
             </tbody>
@@ -66,6 +68,12 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js"></script>
 
 <script>
+    $.ajaxSetup({
+    headers: {
+                'X-CSRF-TOKEN': '{{ csrf_token() }}'
+                }
+            });
+
     $(document).ready(function() {
         $('#searchForm').submit(function(e) {
             e.preventDefault();
@@ -78,7 +86,30 @@
                 }
             });
         });
+
         $('#table').tablesorter();
-    }); 
+
+        $('.delete-button').on('click', function() {
+            const form = $(this).closest('.delete-form');
+            const productId = form.data('product-id');
+
+            if (confirm('本当に削除しますか？')) {
+                $.ajax({
+                    type: 'POST', // HTTPメソッドをPOSTに設定
+                    url: "{{ route('destroy', $product->id) }}" + '/' + productId, // 削除アクションのURL
+                    data: form.serialize(), // フォームデータをシリアライズ
+                    success: function(response) {
+                        if (response.success) {
+                            // 削除に成功した場合の処理
+                            form.closest('tr').remove();
+                        } else {
+                            // 削除に失敗した場合の処理
+                            alert('削除に失敗しました');
+                        }
+                    }
+                });
+            }
+        });
+    });
 </script>
 @endsection

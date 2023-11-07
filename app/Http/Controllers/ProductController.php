@@ -93,12 +93,19 @@ class ProductController extends Controller
         try {
             $product = $this->product->findProduct($id);
             if ($product) {
-                Storage::delete($product->img_path);
-                $this->product->deleteProduct($id);
+                if (Storage::delete($product->img_path)) {
+                    $deleted = $this->product->deleteProduct($id);
+                    if ($deleted) {
+                        return response()->json(['success' => true]);
+                    } else {
+                        return response()->json(['success' => false]);
+                    }
+                } 
+            } else {
+                return response()->json(['success' => false]);
             }
-            return redirect()->route('index')->with('message', '商品情報を削除しました。');
         } catch (\Exception $e) {
-            return redirect()->back()->with('error', '商品を削除できませんでした。');
+            return response()->json(['success' => false]);
         }
     }
 }
