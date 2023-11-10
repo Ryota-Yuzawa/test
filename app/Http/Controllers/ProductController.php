@@ -95,15 +95,10 @@ class ProductController extends Controller
             if ($product) {
                 if (Storage::delete($product->img_path)) {
                     $deleted = $this->product->deleteProduct($id);
-                    if ($deleted) {
-                        return response()->json(['success' => true]);
-                    } else {
-                        return response()->json(['success' => false]);
+                    return response()->json(['success' => $deleted]);
                     }
                 } 
-            } else {
-                return response()->json(['success' => false]);
-            }
+            return response()->json(['success' => false]);
         } catch (\Exception $e) {
             return response()->json(['success' => false]);
         }

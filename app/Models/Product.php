@@ -57,9 +57,10 @@ class Product extends Model
 
     public function deleteProduct($id)
     {
-        $product = self::find($id);
+        $product = Product::find($id);
         if ($product) {
             $product->delete();
+            unset($product);
             return true;
         }
         return false;

@@ -30,4 +30,4 @@ Route::get('/vending_machine/show/{id}', [App\Http\Controllers\ProductController
 Route::get('/vending_machine/edit/{id}', [App\Http\Controllers\ProductController::class, 'edit'])->name('edit');
 Route::put('/vending_machine/edit/{id}', [App\Http\Controllers\ProductController::class, 'update'])->name('update');
 
-Route::post('/destroy/{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');
+Route::delete('/destroy/{id}', [App\Http\Controllers\ProductController::class, 'destroy'])->name('destroy');

@@ -41,7 +41,7 @@
                 @foreach($products as $product)
                     <tr>
                         <td>{{ $product->id }}</td>
-                        <td><img src="{{'/public/storage/'. $product['img_path']}}"></td>
+                        <td><img src="{{'/public/storage/'. $product['img_path.jpg']}}"></td>
                         <td>{{ $product->product_name }}</td>
                         <td>{{ $product->company->company_name}}</td>
                         <td>{{ $product->price }}円</td>
@@ -69,10 +69,11 @@
 
 <script>
     $.ajaxSetup({
-    headers: {
-                'X-CSRF-TOKEN': '{{ csrf_token() }}'
-                }
-            });
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+
 
     $(document).ready(function() {
         $('#searchForm').submit(function(e) {
@@ -89,27 +90,30 @@
 
         $('#table').tablesorter();
 
-        $('.delete-button').on('click', function() {
+        $(document).on('click', '.delete-button', function() {
             const form = $(this).closest('.delete-form');
             const productId = form.data('product-id');
-
             if (confirm('本当に削除しますか？')) {
                 $.ajax({
-                    type: 'POST', // HTTPメソッドをPOSTに設定
-                    url: "{{ route('destroy', $product->id) }}" + '/' + productId, // 削除アクションのURL
-                    data: form.serialize(), // フォームデータをシリアライズ
+                    type: 'POST', // Since you're sending a DELETE request, the type should be POST
+                    url: "{{ url('/destroy/') }}/" + productId, // Construct the URL using Laravel's url() helper
+                    data: form.serialize(),
                     success: function(response) {
                         if (response.success) {
-                            // 削除に成功した場合の処理
-                            form.closest('tr').remove();
+                            form.closest('tr').fadeOut("slow", function() {
+                                $(this).remove(); // Remove the row if the product was successfully deleted
+                            });
                         } else {
-                            // 削除に失敗した場合の処理
                             alert('削除に失敗しました');
                         }
+                    },
+                    error: function(xhr, textStatus, errorThrown) {
+                        alert('削除処理に問題が発生しました。');
                     }
                 });
             }
         });
+
     });
 </script>
 @endsection
