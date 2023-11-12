@@ -88,19 +88,29 @@ class ProductController extends Controller
         }
     }
 
-    public function destroy($id)
+    
+        public function destroy($id)
     {
         try {
             $product = $this->product->findProduct($id);
             if ($product) {
-                if (Storage::delete($product->img_path)) {
-                    $deleted = $this->product->deleteProduct($id);
-                    return response()->json(['success' => $deleted]);
-                    }
-                } 
+                // 画像が存在する場合、削除を試みる
+                if ($product->img_path && Storage::exists($product->img_path)) {
+                    Storage::delete($product->img_path);
+                }
+
+                // プロダクトの削除
+                if ($this->product->deleteProduct($id)) {
+                    return response()->json(['success' => true]);
+                }
+            } 
+
             return response()->json(['success' => false]);
         } catch (\Exception $e) {
-            return response()->json(['success' => false]);
+            // エラーログに記録
+            Log::error("Product deletion failed: " . $e->getMessage());
+            return response()->json(['success' => false, 'error' => $e->getMessage()]);
         }
     }
+
 }
