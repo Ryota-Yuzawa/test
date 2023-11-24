@@ -4,7 +4,7 @@
 <div>
     <h1>商品一覧画面</h1>
     <div>
-        <form id="searchForm">
+        <form id="searchForm" action="{{route('index')}}" method="GET">
         @csrf
         <input type="text" id="keyword" name="keyword" placeholder="キーワード">
         <select id="company_name" name="company_name">
@@ -50,7 +50,7 @@
                             <a href="{{ route('show', $product->id) }}">詳細</a>
                         </td>
                         <td>
-                            <form id="deleteForm{{$product->id}}" class="delete-form" data-product-id="{{$product->id}}">
+                            <form id="deleteForm{{$product->id}}" class="delete-form" data-product-id="{{$product->id}}" data-delete-url="{{ url('destroy', ['id' => $product->id]) }}">
                                 @csrf
                                 @method('DELETE')
                                 <button type="button" class="btn btn-danger delete-button">削除</button>
@@ -63,57 +63,7 @@
         </table>
     </div>
 </div>
-
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js"></script>
-
-<script>
-    $.ajaxSetup({
-        headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        }
-    });
-
-
-    $(document).ready(function() {
-        $('#searchForm').submit(function(e) {
-            e.preventDefault();
-            $.ajax({
-                type: "GET",
-                url: "{{ route('index') }}",
-                data: $('#searchForm').serialize(),
-                success: function(data) {
-                    $('#productTable').find('tbody').html($(data).find('tbody').html());
-                }
-            });
-        });
-
-        $('#table').tablesorter();
-
-        $(document).on('click', '.delete-button', function() {
-            const form = $(this).closest('.delete-form');
-            const productId = form.data('product-id');
-            if (confirm('本当に削除しますか？')) {
-                $.ajax({
-                    type: 'POST', // Since you're sending a DELETE request, the type should be POST
-                    url: "{{ url('/destroy/') }}/" + productId, // Construct the URL using Laravel's url() helper
-                    data: form.serialize(),
-                    success: function(response) {
-                        if (response.success) {
-                            form.closest('tr').fadeOut("slow", function() {
-                                $(this).remove(); // Remove the row if the product was successfully deleted
-                            });
-                        } else {
-                            alert('削除に失敗しました');
-                        }
-                    },
-                    error: function(xhr, textStatus, errorThrown) {
-                        alert('削除処理に問題が発生しました。');
-                    }
-                });
-            }
-        });
-
-    });
-</script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.tablesorter/2.31.3/js/jquery.tablesorter.min.js"></script>
+    <script type="text/javascript" src="js/sample.js"></script>
 @endsection
