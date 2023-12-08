@@ -41,12 +41,4 @@ class SaleController extends Controller
         // レスポンスを返す
         return response()->json(['message' => '購入成功']);
     }
-
-    public function saleGet () {
-        $products = Product::all();
-            return response()->json([
-                'status' => true,
-                'products' => $products
-            ]);
-    }
 }

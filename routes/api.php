@@ -20,5 +20,3 @@ Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
 });
 
 Route::post('/purchase', [App\Http\Controllers\API\SaleController::class, 'purchase'])->name('purchase');
-
-Route::get('/sale', [App\Http\Controllers\API\SaleController::class, 'saleGet'])->name('saleGet');
